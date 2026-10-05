@@ -2,6 +2,8 @@
 
 A userscript that answers a question Google Maps can't: **"show me X within N miles of each Y."**
 
+> **Status: in testing.** It works and I use it, but it is still being tested and changed. Google can change the endpoint it reads at any time, which would break searches until it is updated.
+
 Superchargers with food within half a mile. Hotels with a dog park within a mile. Gas stations with coffee next door. Maps can search for one thing at a time; this runs both searches, measures the distance from every Y to every X, and draws the result on the map.
 
 ## What it does
