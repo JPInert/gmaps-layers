@@ -4,7 +4,15 @@ A userscript that answers a question Google Maps can't: **"show me X within N mi
 
 > **Status: in testing.** It works and I use it, but it is still being tested and changed. Google can change the endpoint it reads at any time, which would break searches until it is updated.
 
+![Superchargers with coffee within 0.5 mi, Gilroy CA](docs/screenshot.png)
+
 Superchargers with food within half a mile. Hotels with a dog park within a mile. Gas stations with coffee next door. Maps can search for one thing at a time; this runs both searches, measures the distance from every Y to every X, and draws the result on the map.
+
+## Why I built it
+
+We drive a Tesla, and a Supercharger stop is 20 to 40 minutes of waiting. I wanted to pick the charger by what is around it: somewhere to eat, a coffee, a park for the dog. Google Maps makes you search each charger one at a time and eyeball the distance. This does it for every charger on the screen at once, and puts the answer in a bottom sheet big enough to use from the car.
+
+It started as "food near Superchargers" but works for any pair: hotels near a dog park, gas next to coffee, whatever you need near whatever you are going to.
 
 ## What it does
 
@@ -26,11 +34,44 @@ The script reads the same search endpoint the Maps page itself calls when you ty
 
 ## Install
 
-1. Install [Violentmonkey](https://violentmonkey.github.io/) or Tampermonkey.
-2. Open `gmaps-layers.user.js` here, click **Raw**, and confirm the install.
-3. Open [Google Maps](https://www.google.com/maps) and use the sentence bar at the top.
+It runs on desktop Chrome, Edge, Firefox and Firefox-based browsers, through a userscript manager extension. Two minutes, once.
 
-Settings and an optional home location are kept in your browser's localStorage. Nothing leaves the page except the Maps searches themselves.
+### 1. Install a userscript manager
+
+Pick one. Violentmonkey is free and open source; Tampermonkey is the most widely used.
+
+| Browser | Extension |
+|---|---|
+| Chrome, Brave | [Violentmonkey](https://chromewebstore.google.com/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag) or [Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) |
+| Edge | [Violentmonkey](https://microsoftedge.microsoft.com/addons/detail/violentmonkey/eeagobfjdenkkddmbclomhiblgggliao) or [Tampermonkey](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd) |
+| Firefox, LibreWolf | [Violentmonkey](https://addons.mozilla.org/firefox/addon/violentmonkey/) or [Tampermonkey](https://addons.mozilla.org/firefox/addon/tampermonkey/) |
+
+### 2. Chrome and Edge only: allow user scripts
+
+Recent versions of Chrome and Edge block userscripts until you switch them on for the extension:
+
+1. Open `chrome://extensions` (or `edge://extensions`).
+2. Click **Details** on Violentmonkey or Tampermonkey.
+3. Turn on **Allow User Scripts**. On older versions that have no such toggle, turn on **Developer mode** at the top right of the extensions page instead.
+
+Firefox needs nothing extra.
+
+### 3. Install the script
+
+Open **[gmaps-layers.user.js](https://raw.githubusercontent.com/JPInert/gmaps-layers/main/gmaps-layers.user.js)**. The extension recognises the `.user.js` file and shows an install page; click **Install** (or **Confirm installation**).
+
+### 4. Use it
+
+1. Open [Google Maps](https://www.google.com/maps) (reload it if it was already open) and move the map to the area you care about.
+2. A bar appears at the top: **[find] within [0.5 mi] of [anchor]**. Click each part to change it, or pick a preset from **Saved**.
+3. Click **Search**. Radius circles appear around each anchor, and the bottom sheet lists what is inside each one, nearest first. Use **Go** for directions.
+4. The filter chips (time, rating, reviews) apply instantly with no new search. **Set home** sorts the anchors by distance from your home instead of the map centre.
+
+To update later, the extension checks for new versions on its own, or open the install link again. To remove it, delete it from the extension's dashboard.
+
+## Testing
+
+`test/smoke.mjs` loads Google Maps in headless Chromium, runs the published script, searches "coffee within 0.5 mi of tesla supercharger" in a small town and checks that the anchors come back with places inside their radius. Last run, 2026-10-05: 4 anchors, 5 / 10 / 8 / 5 places in range, PASS. The screenshot above is from that run. Day to day I run it in Violentmonkey on a Firefox-based browser; Tampermonkey and Chrome's "Allow User Scripts" path have not been checked by hand yet.
 
 ## A note on Google's terms
 
